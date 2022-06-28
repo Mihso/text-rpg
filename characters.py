@@ -10,7 +10,7 @@ class dungeon:
 
         for l in range(self.length):
             for w in range(self.width):
-                if random.randint(0,10) > 2:
+                if random.randint(0,10) > 3:
                     if len(self.spaces) == 0:
                         self.spaces.append([l,w])
                     else:
@@ -26,7 +26,7 @@ class dungeon:
         player_placed = False
         for s in self.spaces:
             if player_placed == False:
-                    if random.randint(1,4) < 2:
+                    if random.randint(1,10) < 2:
                         self.player_start = s
                         player_placed = True
         if player_placed == False:
@@ -96,6 +96,8 @@ class skeleton(enemy):
     def strike(self, player):
         player.health -= self.attack * player.block
         print("The skeleton damaged you for " + str(self.attack * player.block) + " health.")
+    def battle_start(self):
+        print("A skeleton has appeared to attack you.")
 
 class leech(enemy):
     def __init__(self, health, attack, speed,x,y):
@@ -108,5 +110,7 @@ class leech(enemy):
             self.health += self.attack * player.block
             player.health -= self.attack * player.block
             print("The leech lunges at you, dealing "+ str(self.attack* player.block) + " damage to you and healing for the same amount")
+    def batte_start(self):
+        print("A leech has appeared to attack you.")
 
 

@@ -5,20 +5,27 @@ import random
 
 current_dungeon = characters.dungeon(10,10)
 
-coordinate_x = 0
-coordinate_y = 0
+player_coordinate = [current_dungeon.player_start[0], current_dungeon.player_start[1]]
 
 def movement():
     print("You notice that there are 4 doors, one for each cardinal direction. Which one would you like to go through")
+    previous = [player_coordinate[0], player_coordinate[1]]
     response = input("North, South, East, West")
     if response.lower() == "north":
-        coordinate_y += 1
+        player_coordinate[1] += 1
     elif response.lower() == "south":
-        coordinate_y -=1
+        player_coordinate[1] -=1
     elif response.lower() == "east":
-        coordinate_x += 1
+        player_coordinate[0] += 1
     elif response.lower() == "west":
-        coordinate_x -= 1
+        player_coordinate[0] -= 1
+
+    if player_coordinate not in current_dungeon.spaces:
+        print("You ran into a wall.")
+        player_coordinate[0] = previous[0]
+        player_coordinate[1] = previous[1]
+
+    print(player_coordinate)
 
 def battle(foe): # the entire code for the battle system
     turns = 0
@@ -29,10 +36,7 @@ def battle(foe): # the entire code for the battle system
         player.block = 1
         player_done = False
         while player_done == False:
-            if turns < 1:
-                print("You have encountered an enemy, what will you do?")
-            else:
-                print("What will you do next?")
+            print("What will you do?")
             action = input("Fight, Block, Magic, Run, Items, Analyze")
             if action.lower() == "fight":
                 if random.randint(0,10) < player.acc: # accuracy determines if attack lands
@@ -143,12 +147,24 @@ done = False
 #     else:
 #         print("not an appropriate answer, try again.")
 
-skeleton_knight = characters.skeleton(health = 100, attack= 10, speed= 2, x = random.randint(0,2), y = random.randint(0,2))
+enemy_coordinate = []
+for s in current_dungeon.spaces:
+    if random.randint(1,7) < 6:
+        enemy_coordinate = s
 
-battle(skeleton_knight)
+skeleton_knight = characters.skeleton(health = 100, attack= 10, speed= 2, x = enemy_coordinate[0], y = enemy_coordinate[1])
+print(str(skeleton_knight.x) +" "+ str(skeleton_knight.y))
 
-print("You have defeated the skeleton, but oh no! A leech has approached you.")
+game_state = True
 
-leacher = characters.leech(health = 50, attack = 5, speed  = 3, x = random.randint(-2, 0), y = random.randint(-2,0))
+while game_state == True:
+    movement()
 
-battle(leacher)
+    if player_coordinate == [skeleton_knight.x, skeleton_knight.y]:
+        skeleton_knight.battle_start()
+        battle(skeleton_knight)
+        print("You have defeated the skeleton, but oh no! A leech has approached you.")
+
+        leacher = characters.leech(health = 50, attack = 5, speed  = 3, x = random.randint(5, 8), y = random.randint(4,8))
+
+        battle(leacher)
