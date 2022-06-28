@@ -3,47 +3,86 @@ import random
 
 # events
 
-def battle(foe):
+current_dungeon = characters.dungeon(10,10)
+
+coordinate_x = 0
+coordinate_y = 0
+
+def movement():
+    print("You notice that there are 4 doors, one for each cardinal direction. Which one would you like to go through")
+    response = input("North, South, East, West")
+    if response.lower() == "north":
+        coordinate_y += 1
+    elif response.lower() == "south":
+        coordinate_y -=1
+    elif response.lower() == "east":
+        coordinate_x += 1
+    elif response.lower() == "west":
+        coordinate_x -= 1
+
+def battle(foe): # the entire code for the battle system
     turns = 0
     inBattle = True
     attack = player.stre * 1
+    player_done = False
     while inBattle:
-        if turns < 1:
-            print("You have encountered an enemy, what will you do?")
-        else:
-            print("The enemy still stands, what will you do?")
-        action = input("Fight, Magic, Run, Items, Analyze")
-        if action.lower() == "fight":
-            if random.randint(0,10) < player.acc:
-                foe.health -= player.stre
-                print("You damaged the enemy for " + str(attack) + " health.")
+        player.block = 1
+        player_done = False
+        while player_done == False:
+            if turns < 1:
+                print("You have encountered an enemy, what will you do?")
             else:
-                print("You missed")
-            turns += 1
-        elif action.lower() == "magic":
-            magic_resp = input("What spell do you want to cast")
-            if magic_resp.lower() == "heal":
-                heal_amount = player.inte
-                player.health += heal_amount
-                print("You healed youself for " + str(heal_amount) + " health.")
-        elif action.lower() == "run":
-            if random.randint(int(player.dext), 100 * foe.speed) < player.dext:
-                inBattle = False
-                print("You managed to run away")
-            else: 
-                print("Oh no, you couldn't escape.")
-            turns += 1
-        elif action.lower() == "analyze":
-            print("your health:")
-            print(player.health)
-            print("enemy stats:")
-            foe.get_stats()
-            turns += 1
-        else:
-            print("That is not a recognized action, try again.")
+                print("What will you do next?")
+            action = input("Fight, Block, Magic, Run, Items, Analyze")
+            if action.lower() == "fight":
+                if random.randint(0,10) < player.acc: # accuracy determines if attack lands
+                    foe.health -= player.stre
+                    print("You damaged the enemy for " + str(attack) + " health.")
+                else:
+                    print("You missed")
+                turns += 1
+                player_done = True
+            elif action.lower() == "block":
+                player.block = 0.5
+                print("You brace yourself, reducing damage by half")
+                turns += 1
+                player_done = True
+            elif action.lower() == "magic":
+                magic_resp = input("What spell do you want to cast")
+                if magic_resp.lower() == "heal": # heal here
+                    heal_amount = player.inte
+                    player.health += heal_amount
+                    print("You healed youself for " + str(heal_amount) + " health.")
+                turns += 1
+                player_done = True
+            elif action.lower() == "run":
+                if random.randint(int(player.dext), 100 * (1/foe.speed)) < player.dext:# chance of escape based on player dext and enemy speed
+                    inBattle = False
+                    print("You managed to run away")
+                else: 
+                    print("Oh no, you couldn't escape.")
+                turns += 1
+                player_done = True
+            elif action.lower() == "items":
+                if len(player.items) == 0:
+                    print("You have no items to use.")
+                else:
+                    pass
+            elif action.lower() == "analyze":
+                if "crystal_ball" in player.items:
+                    pass
+                else:
+                    print("your health:")
+                    print(player.health)
+                print("enemy stats:")
+                foe.get_stats()
+                turns += 1
+                player_done = True
+            else:
+                print("That is not a recognized action, try again.")
         
         if foe.health <=0: #checks if someone is defeated.
-            print("You slain the enemy.")
+            print("You have slain the enemy.")
             inBattle = False
         elif player.health <=0:
             print("You have been slain")
@@ -52,15 +91,13 @@ def battle(foe):
             if turns % foe.speed == 0:
                 print("The enemy is attacking.")
                 if player.dext < (random.randint(0,10) * foe.speed):
-                    player.health -= foe.attack
-                    print("The enemy damaged you for " + str(foe.attack) + " health.")
+                    foe.strike(player)
                 else:
                     print("You managed to gracefully dodge the attack.")
             else:
                 print("The enemy is preparing to attack.")
             
-            if random.randint(0,10) > 7:
-                foe.special_attack()
+            foe.special_attack(player)
 
 
 
@@ -78,7 +115,7 @@ print("Shivering, you look around to see if there is anything you could wear")
 
 response = ""
 
-# done = False
+done = False
 
 # while done == False:
 #     response = input("Pick one to interact with: person, cloth, rat")
@@ -106,6 +143,12 @@ response = ""
 #     else:
 #         print("not an appropriate answer, try again.")
 
-skeleton_knight = characters.skeleton(health = 100, attack= 10, speed= 2)
+skeleton_knight = characters.skeleton(health = 100, attack= 10, speed= 2, x = random.randint(0,2), y = random.randint(0,2))
 
 battle(skeleton_knight)
+
+print("You have defeated the skeleton, but oh no! A leech has approached you.")
+
+leacher = characters.leech(health = 50, attack = 5, speed  = 3, x = random.randint(-2, 0), y = random.randint(-2,0))
+
+battle(leacher)
