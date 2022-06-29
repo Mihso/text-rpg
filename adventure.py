@@ -4,7 +4,7 @@ import random
 
 # events
 
-current_dungeon = characters.dungeon(10,10)
+current_dungeon = characters.dungeon(15,15)
 
 enemies = []
 
@@ -65,6 +65,17 @@ def movement(): # movement through the dungeon
             print("")
             print(e.name)
             print("["+str(e.x)+","+str(e.y)+"]")
+    elif "rat" in player.items:
+        print("")
+        enemy_nearby = False
+        for e in enemies:
+            if abs(e.x - player_coordinate[0]) < 2 and abs(e.y-player_coordinate[1]) < 2:
+                print("Careful, I smell a " + e.name + " nearby.")
+                enemy_nearby = True
+        if enemy_nearby == False:
+            print("Rat speaks up.")
+            print("'It's safe at the moment, nobody else is nearby'")
+        
 def map():
     for l in range(current_dungeon.length):
         row = ""
@@ -72,6 +83,8 @@ def map():
             if [l,w] in current_dungeon.spaces:
                 if l == player_coordinate[0] and w == player_coordinate[1]:
                     row += "[o]"
+                elif l == current_dungeon.exit_loc[0] and w == current_dungeon.exit_loc[1]:
+                    row += "[x]"
                 else:
                     en_found = False
                     for e in enemies:
@@ -82,7 +95,7 @@ def map():
                     else:
                         row += "[ ]"
             else:
-                row += "[x]"
+                row += "[#]"
         print(row)
 
 
@@ -124,11 +137,7 @@ def battle(foe): # the entire code for the battle system
                 player_done = True
             elif action.lower() == "magic":
                 magic_resp = input("What spell do you want to cast")
-                if magic_resp.lower() == "heal": # heal here
-                    heal_amount = player.inte
-                    player.health += heal_amount
-                    print("")
-                    print("You healed youself for " + str(heal_amount) + " health.")
+                player.spellcast(magic_resp)
                 turns += 1
                 player_done = True
             elif action.lower() == "run":
@@ -157,6 +166,11 @@ def battle(foe): # the entire code for the battle system
                     print("")
                     print("enemy stats:")
                     foe.get_stats()
+                elif "rat" in player.items:
+                    print("")
+                    print("Rat squicks into your ear.")
+                    print("'Careful, my magically enhanced instincts tell me that " + foe.name + " takes " +str(foe.speed)+" turns to attack. Be on your guard")
+                print("")
                 foe.description()
                 turns += 1
                 player_done = True
@@ -189,11 +203,13 @@ def battle(foe): # the entire code for the battle system
 
 
 
-player = characters.character()
+player = characters.character() #introduction
 player.get_stats()
+exitting = characters.exit_dun(current_dungeon.exit_loc[0], current_dungeon.exit_loc[1])
 print("")
 print("You wake up, body soaked with water. You get yourself upon, realizing you had been laying in a puddle.")
 print("You look around, various objects can be found throughout the room. You then look down at the puddle and see your reflection.")
+print("")
 response = input("What are you wearing?")
 if response.lower() in "naked nude nothing nada":
     print("")
@@ -203,7 +219,7 @@ else:
     print("Too bad, you are actually wearing nothing at all.")
 
 print("")
-print("Shivering, you look around to see if there is anything you could wear")
+print("Shivering, you look around to see if there is anything you could wear.")
 
 response = ""
 
@@ -213,7 +229,7 @@ while done == False:
     print("")
     response = input("Pick one to interact with: person, cloth, rat")
     if response.lower() == "person":
-        if player.inte > 4:
+        if player.inte > 3:
             print("")
             print("'Hello there, my name is Maggie. I am just a frail old lady, I could croak at any moment. But, while I am still around, I can help you.'")
             print("'I can use divination to tell you your physical condition. Would you like that?'")
@@ -251,17 +267,22 @@ while done == False:
         if response2.lower() == "yes":
             print("")
             player.items["rat"] = "friend"
-            print("Thank you. I will assist whenever I can.")
+            print("'Thank you. I will assist whenever I can.'")
+            print("")
+            print("Rat has joined the party.")
         elif response2.lower() == "no":
             print("")
             print("Well, best of luck to you then.")
         print("")
-        print("You leave Rat, but the other objects have vanished, hope you made the right choice")
+        print("You look around and notice the other objects have vanished, hope you made the right choice")
         done = True
     elif response.lower() == "cloth":
         print("You find a bunch of clothes. You grab them when a map falls out from inside. You grab the map")
         player.items["map"] = "magic"
         print("It turns out to be a magic map, with you being able to see youself on the map, among othe things.")
+        print("")
+        player.health += 50
+        print("You put the clothes on. They feel oddly dense. Could make for some goood protection")
         done = True
     else:
         print("")
@@ -272,7 +293,8 @@ skeleton_loc = enemy_location()
 skeleton_knight = characters.skeleton(health = 100, attack= 10, speed= 2, x = skeleton_loc[0], y = skeleton_loc[1])
 enemies.append(skeleton_knight)
 
-leacher = characters.leech(health = 50, attack = 25, speed  = 3, x = enemy_location()[0], y = enemy_location()[1])
+leacher_loc = enemy_location()
+leacher = characters.leech(health = 50, attack = 25, speed = 3, x = leacher_loc[0], y = leacher_loc[1])
 enemies.append(leacher)
 
 game_state = True
@@ -284,5 +306,8 @@ while game_state == True:
 
     for e in enemies:
         if player_coordinate == [e.x, e.y]:
+            print("")
             e.battle_start()
             battle(e)
+    if player_coordinate == [current_dungeon.exit_loc[0],current_dungeon.exit_loc[1]]: # end game if goal is reach
+        game_state = False

@@ -1,4 +1,3 @@
-from gc import get_stats
 import random
 
 class dungeon:
@@ -6,6 +5,7 @@ class dungeon:
         self.length = length
         self.width = width
         self.player_start = []
+        self.exit_loc = []
         self.spaces = []
         empty = []
 
@@ -40,6 +40,15 @@ class dungeon:
         if player_placed == False:
             self.player_start = self.spaces[0]
             player_placed = True
+        exit_placed = False
+        for s in self.spaces:
+            if exit_placed == False:
+                if random.randint(1,100) < 2:
+                    self.exit_loc = s
+                    exit_placed = True
+        if exit_placed == False:
+                self.exit_loc = self.spaces[len(self.spaces)-1]
+                exit_placed = True
 
 class character:
     def __init__(self):
@@ -51,6 +60,7 @@ class character:
         self.block = 1
         self.spells = {}
         self.spells["heal"] = "yes"
+        self.spells["cleanse"] = "yes"
         self.items = {}
         points = 40
         while points > 0:
@@ -79,6 +89,25 @@ class character:
         print("You have access to these spells:")
         for s in self.spells:
             print(s)
+
+    def spellcast(self, spell):
+        if spell.lower() == "heal": 
+            heal_amount = self.inte
+            self.health += heal_amount
+            print("")
+            print("You healed youself for " + str(heal_amount) + " health.")
+        elif spell.lower() == "cleanse":
+            self.acc = self.baseacc
+            self.stre = self.basestre
+            self.dext = self.basedext
+            print("")
+            print("You have cleansed yourself of debuffs")
+
+class exit_dun:
+    def __init__(self,x,y):
+        self.found = False
+        self.x = x
+        self.y = y
 
 class key:
     def __init__(self, rusty, size):
@@ -130,5 +159,38 @@ class leech(enemy):
         print("A leech has appeared to attack you.")
     def description(self):
         print("A giant leech with sharp teeth. At least it is not a vampire.")
+
+class overlord(enemy):
+    def __init__(self, health, attack, speed,x,y):
+        super().__init__(health, "Overlord", attack, speed,x,y)
+        
+    def special_attack(self, player):
+        if random.randint(0,10) > 7:
+            player.stre = player.stre / 2
+            player.acc = player.acc / 2
+            player.dex = player.dex / 2
+            print("")
+            print("The Overlord has cast a curse on you, halving your strength, accuracy, and dexterity.")
+        if random.randint(0,8) > 7:
+            if self.speed > 1:
+                self.speed -=1
+            print("")
+            print("The Overlord has cast a spell on itself, increasing it's speed.")
+        
+        if random.randint(0,5) > 5:
+            player.health -= self.attack / 2
+            print("")
+            print("Some random minions take potshots at you, dealing " + str(self.attack/2) + " damage.")
+
+    
+    def strike(self, player):
+            player.health -= self.attack * player.block
+            print("The Overlord strikes, dealing "+ str(self.attack* player.block) + " damage to you.")
+    def battle_start(self):
+        print("The Overlord towers before you.")
+        print("")
+        print("'Who dares challenge me?'")
+    def description(self):
+        print("A demon lord proficient with all kinds of magics. Be wary.")
 
 
