@@ -1,3 +1,4 @@
+from re import L
 import characters
 import random
 
@@ -7,17 +8,17 @@ current_dungeon = characters.dungeon(10,10)
 
 player_coordinate = [current_dungeon.player_start[0], current_dungeon.player_start[1]]
 
-def movement():
+def movement(): # movement through the dungeon
     print("You notice that there are 4 doors, one for each cardinal direction. Which one would you like to go through")
     previous = [player_coordinate[0], player_coordinate[1]]
     response = input("North, South, East, West")
-    if response.lower() == "north":
+    if response.lower() == "east":
         player_coordinate[1] += 1
-    elif response.lower() == "south":
-        player_coordinate[1] -=1
-    elif response.lower() == "east":
-        player_coordinate[0] += 1
     elif response.lower() == "west":
+        player_coordinate[1] -=1
+    elif response.lower() == "south":
+        player_coordinate[0] += 1
+    elif response.lower() == "north":
         player_coordinate[0] -= 1
 
     if player_coordinate not in current_dungeon.spaces:
@@ -26,6 +27,21 @@ def movement():
         player_coordinate[1] = previous[1]
 
     print(player_coordinate)
+
+def map():
+    for l in range(current_dungeon.length):
+        row = ""
+        for w in range(current_dungeon.width):
+            if [l,w] in current_dungeon.spaces:
+                if l == player_coordinate[0] and w == player_coordinate[1]:
+                    row += "[o]"
+                else:
+                    row += "[ ]"
+            else:
+                row += "[x]"
+        print(row)
+
+
 
 def battle(foe): # the entire code for the battle system
     turns = 0
@@ -107,19 +123,19 @@ def battle(foe): # the entire code for the battle system
 
 player = characters.character()
 player.get_stats()
-print("You wake up, body soaked with water. You get yourself upon, realizing you had been laying in a puddle.")
-print("You look around, various objects can be found throughout the room. You then look down at the puddle and see your reflection.")
-response = input("What are you wearing?")
-if response.lower() in "naked nude nothing nada":
-    print("Quite the predicament, you find that you are nude.")
-else:
-    print("Too bad, you are actually wearing nothing at all.")
+# print("You wake up, body soaked with water. You get yourself upon, realizing you had been laying in a puddle.")
+# print("You look around, various objects can be found throughout the room. You then look down at the puddle and see your reflection.")
+# response = input("What are you wearing?")
+# if response.lower() in "naked nude nothing nada":
+#     print("Quite the predicament, you find that you are nude.")
+# else:
+#     print("Too bad, you are actually wearing nothing at all.")
 
-print("Shivering, you look around to see if there is anything you could wear")
+# print("Shivering, you look around to see if there is anything you could wear")
 
-response = ""
+# response = ""
 
-done = False
+# done = False
 
 # while done == False:
 #     response = input("Pick one to interact with: person, cloth, rat")
@@ -158,6 +174,7 @@ print(str(skeleton_knight.x) +" "+ str(skeleton_knight.y))
 game_state = True
 
 while game_state == True:
+    map()
     movement()
 
     if player_coordinate == [skeleton_knight.x, skeleton_knight.y]:

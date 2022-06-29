@@ -7,10 +7,11 @@ class dungeon:
         self.width = width
         self.player_start = []
         self.spaces = []
+        empty = []
 
         for l in range(self.length):
             for w in range(self.width):
-                if random.randint(0,10) > 3:
+                if random.randint(0,10) > 4:
                     if len(self.spaces) == 0:
                         self.spaces.append([l,w])
                     else:
@@ -22,6 +23,14 @@ class dungeon:
                                     placed = True
                                 else:
                                     pass
+                else:
+                    empty.append([l,w])
+        print(empty)
+        for e in empty:
+            if [e[0] + 1, e[1]+1] not in self.spaces and [e[0]-1, e[1]-1] not in self.spaces:
+                self.spaces.append(e)
+            elif [e[0] - 1, e[1] + 1] not in self.spaces and [e[0]+1, e[1]-1] not in self.spaces:
+                self.spaces.append(e)
 
         player_placed = False
         for s in self.spaces:
