@@ -164,6 +164,10 @@ def battle(foe): # the entire code for the battle system
                 foe.description()
                 turns += 1
                 player_done = True
+            elif action.lower() == "win":
+                foe.health = 0
+                turns +=1
+                player_done = True
             else:
                 print("")
                 print("That is not a recognized action, try again.")
@@ -172,10 +176,12 @@ def battle(foe): # the entire code for the battle system
             print("")
             print("You have slain the " + foe.name +".")
             inBattle = False
+            return True
         elif player.health <=0:
             print("")
             print("You have been slain")
             inBattle = False
+            return False
         else: # enemy turn
             if turns % foe.speed == 0:
                 print("")
@@ -193,7 +199,6 @@ def battle(foe): # the entire code for the battle system
 
 
 player = characters.character() #introduction
-player.get_stats()
 exitting = characters.exit_dun(current_dungeon.exit_loc[0], current_dungeon.exit_loc[1])
 print("")
 print("You wake up, body soaked with water. You get yourself upon, realizing you had been laying in a puddle.")
@@ -292,7 +297,12 @@ while game_state == True:
         if player_coordinate == [e.x, e.y]:
             print("")
             e.battle_start()
-            battle(e)
+            combat = battle(e)
+            if combat:
+                enemies.remove(e)
+            else:
+                print("GAME OVER!")
+                game_state = False
     if player_coordinate == [current_dungeon.exit_loc[0],current_dungeon.exit_loc[1]]: # end game if goal is reach
         print("")
         print("Congrats, you made it out of the dungeon.")
