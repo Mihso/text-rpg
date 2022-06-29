@@ -6,7 +6,21 @@ import random
 
 current_dungeon = characters.dungeon(10,10)
 
+enemies = []
+
+
+
 player_coordinate = [current_dungeon.player_start[0], current_dungeon.player_start[1]]
+
+def enemy_location():
+    enemy_coordinate = []
+    enemy_loc = False
+    for s in current_dungeon.spaces:
+        if random.randint(1,7) < 3:
+            if enemy_loc == False:
+                enemy_coordinate = s
+                enemy_loc == True
+    return enemy_coordinate
 
 def movement(): # movement through the dungeon
     print("You notice that there are 4 doors, one for each cardinal direction. Which one would you like to go through")
@@ -163,12 +177,13 @@ player.get_stats()
 #     else:
 #         print("not an appropriate answer, try again.")
 
-enemy_coordinate = []
-for s in current_dungeon.spaces:
-    if random.randint(1,7) < 6:
-        enemy_coordinate = s
 
-skeleton_knight = characters.skeleton(health = 100, attack= 10, speed= 2, x = enemy_coordinate[0], y = enemy_coordinate[1])
+skeleton_loc = enemy_location()
+skeleton_knight = characters.skeleton(health = 100, attack= 10, speed= 2, x = skeleton_loc[0], y = skeleton_loc[1])
+enemies.append(skeleton_knight)
+
+leacher = characters.leech(health = 50, attack = 25, speed  = 3, x = enemy_location()[0], y = enemy_location()[1])
+enemies.append(leacher)
 print(str(skeleton_knight.x) +" "+ str(skeleton_knight.y))
 
 game_state = True
@@ -177,11 +192,8 @@ while game_state == True:
     map()
     movement()
 
-    if player_coordinate == [skeleton_knight.x, skeleton_knight.y]:
-        skeleton_knight.battle_start()
-        battle(skeleton_knight)
-        print("You have defeated the skeleton, but oh no! A leech has approached you.")
-
-        leacher = characters.leech(health = 50, attack = 5, speed  = 3, x = random.randint(5, 8), y = random.randint(4,8))
-
-        battle(leacher)
+    for e in enemies:
+        print(str(e.x) + str(e.y))
+        if player_coordinate == [e.x, e.y]:
+            e.battle_start()
+            battle(e)

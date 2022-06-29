@@ -25,7 +25,6 @@ class dungeon:
                                     pass
                 else:
                     empty.append([l,w])
-        print(empty)
         for e in empty:
             if [e[0] + 1, e[1]+1] not in self.spaces and [e[0]-1, e[1]-1] not in self.spaces:
                 self.spaces.append(e)
@@ -41,8 +40,6 @@ class dungeon:
         if player_placed == False:
             self.player_start = self.spaces[0]
             player_placed = True
-        print(self.spaces)
-        print(self.player_start)
 
 class character:
     def __init__(self):
