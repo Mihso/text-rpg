@@ -1,26 +1,15 @@
 from re import L
 import characters
 import random
+import level
 
 # events
 
-current_dungeon = characters.dungeon(15,15)
-
-enemies = []
-
-
+current_dungeon = characters.dungeon(15,15) # determine dungeon size
 
 player_coordinate = [current_dungeon.player_start[0], current_dungeon.player_start[1]]
 
-def enemy_location():
-    enemy_coordinate = []
-    enemy_loc = False
-    for s in current_dungeon.spaces:
-        if random.randint(1,7) < 2:
-            if enemy_loc == False:
-                enemy_coordinate = s
-                enemy_loc == True
-    return enemy_coordinate
+enemies = []
 
 def movement(): # movement through the dungeon
     print("It is hard to see, but you can move around. Which way would you like to go?")
@@ -34,7 +23,9 @@ def movement(): # movement through the dungeon
         player_coordinate[0] += 1
     elif response.lower() == "north":
         player_coordinate[0] -= 1
-
+    else:
+        print("")
+        print("Not a direction, so you don't move.")
     if player_coordinate not in current_dungeon.spaces:
         print("")
         print("You ran into a wall.")
@@ -97,7 +88,6 @@ def map():
             else:
                 row += "[#]"
         print(row)
-
 
 
 def battle(foe): # the entire code for the battle system
@@ -202,7 +192,6 @@ def battle(foe): # the entire code for the battle system
             foe.special_attack(player)
 
 
-
 player = characters.character() #introduction
 player.get_stats()
 exitting = characters.exit_dun(current_dungeon.exit_loc[0], current_dungeon.exit_loc[1])
@@ -289,16 +278,11 @@ while done == False:
         print("not an appropriate answer, try again.")
 
 
-skeleton_loc = enemy_location()
-skeleton_knight = characters.skeleton(health = 100, attack= 10, speed= 2, x = skeleton_loc[0], y = skeleton_loc[1])
-enemies.append(skeleton_knight)
-
-leacher_loc = enemy_location()
-leacher = characters.leech(health = 50, attack = 25, speed = 3, x = leacher_loc[0], y = leacher_loc[1])
-enemies.append(leacher)
-
 game_state = True
 # The actual game state
+
+level1 = level.level_1(current_dungeon) # generates enemies based on dungeon input
+enemies = level1.enemy_list
 while game_state == True:
     if "map" in player.items:
         map()
@@ -310,4 +294,10 @@ while game_state == True:
             e.battle_start()
             battle(e)
     if player_coordinate == [current_dungeon.exit_loc[0],current_dungeon.exit_loc[1]]: # end game if goal is reach
+        print("")
+        print("Congrats, you made it out of the dungeon.")
+        print("")
+        if "rat" in player.items:
+            print("Rat walks to in front of you.")
+            print("'Thank you for letting join you. I hope you the best.'")
         game_state = False
