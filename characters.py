@@ -50,6 +50,7 @@ class character:
         self.health = 100
         self.block = 1
         self.spells = {}
+        self.spells["heal"] = "yes"
         self.items = {}
         points = 40
         while points > 0:
@@ -73,6 +74,11 @@ class character:
         print("dex: " + str(self.dext))
         print("str: " + str(self.stre))
         print("acc: " + str(self.acc))
+        print("health: " + str(self.health))
+        print("")
+        print("You have access to these spells:")
+        for s in self.spells:
+            print(s)
 
 class key:
     def __init__(self, rusty, size):
@@ -80,20 +86,22 @@ class key:
         self.size = size
 
 class enemy:
-    def __init__(self, health, attack, speed, x, y):
+    def __init__(self, health, name, attack, speed, x, y):
+        self.name = name
         self.health = health
         self.attack = attack
         self.speed = speed
         self.x = x
         self.y = y
     def get_stats(self):
+        print(self.name)
         print("health: " + str(self.health))
         print("attack: " + str(self.attack))
         print("speed: " + str(self.speed))
 
 class skeleton(enemy):
     def __init__(self, health, attack, speed, x, y):
-        super().__init__(health, attack, speed, x, y)
+        super().__init__(health, "skeleton", attack, speed, x, y)
         
     def special_attack(self, player):
         if random.randint(0,10) > 7:
@@ -104,10 +112,12 @@ class skeleton(enemy):
         print("The skeleton damaged you for " + str(self.attack * player.block) + " health.")
     def battle_start(self):
         print("A skeleton has appeared to attack you.")
+    def description(self):
+        print("A spooky skeleton with a sword. Seems to have a bone to pick with you.")
 
 class leech(enemy):
     def __init__(self, health, attack, speed,x,y):
-        super().__init__(health, attack, speed,x,y)
+        super().__init__(health, "leech", attack, speed,x,y)
         
     def special_attack(self, player):
         pass
@@ -116,7 +126,9 @@ class leech(enemy):
             self.health += self.attack * player.block
             player.health -= self.attack * player.block
             print("The leech lunges at you, dealing "+ str(self.attack* player.block) + " damage to you and healing for the same amount")
-    def batte_start(self):
+    def battle_start(self):
         print("A leech has appeared to attack you.")
+    def description(self):
+        print("A giant leech with sharp teeth. At least it is not a vampire.")
 
 
