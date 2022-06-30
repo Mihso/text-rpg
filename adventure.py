@@ -66,7 +66,6 @@ def stage(floor, dunge): # generates enemies based on dungeon input
                                     player.items["sword"] += 1
                                 player.basestre += 1 * player.items.get("sword")
                                 player.stre += 1 * player.items.get("sword")
-                                player.get_stats()
                                 print("")
                                 print("You pick up the sword. It's power flows into your body.")
                                 event_clear = True
@@ -85,7 +84,6 @@ def stage(floor, dunge): # generates enemies based on dungeon input
                                     player.items["shield"] += 1
                                 player.baseBlock += 0.05 * player.items.get("shield")
                                 player.baseBlock += 0.05 * player.items.get("shield")
-                                player.get_stats()
                                 print("")
                                 print("You pick up the shield. Your provides more protection when blocking.")
                                 print("Get enough shields, and you may even heal upon block.")
