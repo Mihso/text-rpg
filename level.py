@@ -37,15 +37,13 @@ class level_1:
         skeleton_knight1 = characters.skeleton(health = 120, attack= 13, speed= 2, x = skeleton_loc[0], y = skeleton_loc[1])
         self.enemy_list.append(skeleton_knight1)
 
-        for i in range(0,10):
-            if random.randint(1,10) > 5: 
-                event_loc = enemy_location(self.dungeon)
-                trap1 = characters.trap(event_loc[0],event_loc[1],"trap",random.randint(10,30))
+        for i in range(0,len(self.dungeon.spaces)):
+            if random.randint(1,10) > 6: 
+                trap1 = characters.trap(self.dungeon.spaces[i][0],self.dungeon.spaces[i][1],"trap",random.randint(10,30))
                 self.event_list.append(trap1)
             else:
-                event_loc = enemy_location(self.dungeon)
                 event_name = ""
                 if random.randint(1,4) > 0:
                     event_name = self.events[0]
-                event = characters.something(event_loc[0], event_loc[1], event_name)
+                event = characters.something(self.dungeon.spaces[i][0],self.dungeon.spaces[i][1], event_name)
                 self.event_list.append(event)

@@ -58,6 +58,7 @@ class character:
         self.acc = 0
         self.health = 100
         self.block = 1
+        self.baseBlock = 0.25
         self.spells = {}
         self.spells["heal"] = "yes"
         self.spells["cleanse"] = "yes"

@@ -48,8 +48,10 @@ def stage(floor, dunge): # generates enemies based on dungeon input
                 elif e.name == "find_item":
                     print("")
                     item_name = ""
-                    if random.randint(1,4) > 0:
+                    if random.randint(1,4) > 2:
                         item_name = "sword"
+                    else:
+                        item_name = "shield"
                     event_clear = False
                     while event_clear == False:
                         print("You are walking along when you stub your toe.")
@@ -62,8 +64,8 @@ def stage(floor, dunge): # generates enemies based on dungeon input
                                     player.items["sword"] = 1
                                 else:
                                     player.items["sword"] += 1
-                                player.basestre += 5 * player.items.get("sword")
-                                player.stre += 5 * player.items.get("sword")
+                                player.basestre += 1 * player.items.get("sword")
+                                player.stre += 1 * player.items.get("sword")
                                 player.get_stats()
                                 print("")
                                 print("You pick up the sword. It's power flows into your body.")
@@ -75,6 +77,27 @@ def stage(floor, dunge): # generates enemies based on dungeon input
                             else:
                                 print("")
                                 print("Not a viable option, try again.")
+                        elif item_name == "shield":
+                            if repsonse.lower() == "yes":
+                                if "shield" not in player.items:
+                                    player.items["shield"] = 1
+                                else:
+                                    player.items["shield"] += 1
+                                player.baseBlock += 0.05 * player.items.get("shield")
+                                player.baseBlock += 0.05 * player.items.get("shield")
+                                player.get_stats()
+                                print("")
+                                print("You pick up the shield. Your provides more protection when blocking.")
+                                print("Get enough shields, and you may even heal upon block.")
+                                event_clear = True
+                            elif repsonse.lower() == "no":
+                                print("")
+                                print("You ignore the shield. The wall then grabs the shield.")
+                                event_clear = True
+                            else:
+                                print("")
+                                print("Not a viable option, try again.")
+
 
                 events.remove(e)
         if player_coordinate == [dunge.exit_loc[0],dunge.exit_loc[1]]: # end game if goal is reach
@@ -206,7 +229,7 @@ def battle(foe): # the entire code for the battle system
                 turns += 1
                 player_done = True
             elif action.lower() == "block":
-                player.block = 0.5
+                player.block = player.baseBlock
                 print("")
                 print("You brace yourself, reducing damage by half")
                 turns += 1
