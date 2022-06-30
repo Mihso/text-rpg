@@ -115,9 +115,12 @@ class trap:
         self.y = y
         self.name = name
         self.damage = damage
+
 class something:
-    def __init__(self, name):
+    def __init__(self, x, y, name):
         self.name = name
+        self.x = x
+        self.y = y
 
 
 class key:

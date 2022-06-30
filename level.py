@@ -7,6 +7,7 @@ class level_1:
         self.dungeon = dungeon
         self.enemy_list = []
         self.event_list = []
+        self.events = ["find_item"]
 
         def enemy_location(dunge):
             enemy_coordinate = []
@@ -41,3 +42,10 @@ class level_1:
                 event_loc = enemy_location(self.dungeon)
                 trap1 = characters.trap(event_loc[0],event_loc[1],"trap",random.randint(10,30))
                 self.event_list.append(trap1)
+            else:
+                event_loc = enemy_location(self.dungeon)
+                event_name = ""
+                if random.randint(1,4) > 0:
+                    event_name = self.events[0]
+                event = characters.something(event_loc[0], event_loc[1], event_name)
+                self.event_list.append(event)

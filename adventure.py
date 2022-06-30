@@ -14,6 +14,7 @@ player_coordinate = []
 
 def stage(floor, dunge): # generates enemies based on dungeon input
     state = True
+    player.get_stats()
     player_coordinate.append(dunge.player_start[0])
     player_coordinate.append(dunge.player_start[1])
     for e in floor.enemy_list:
@@ -44,6 +45,37 @@ def stage(floor, dunge): # generates enemies based on dungeon input
                 if e.name == "trap":
                     player.health -= e.damage
                     print("You stepped on a trap, taking " + str(e.damage) + " damage.")
+                elif e.name == "find_item":
+                    print("")
+                    item_name = ""
+                    if random.randint(1,4) > 0:
+                        item_name = "sword"
+                    event_clear = False
+                    while event_clear == False:
+                        print("You are walking along when you stub your toe.")
+                        print("You look down and see a " + item_name + ".")
+                        print("Do you pick it up?")
+                        repsonse = input("yes or no")
+                        if item_name == "sword":
+                            if repsonse.lower() == "yes":
+                                if "sword" not in player.items:
+                                    player.items["sword"] = 1
+                                else:
+                                    player.items["sword"] += 1
+                                player.basestre += 5 * player.items.get("sword")
+                                player.stre += 5 * player.items.get("sword")
+                                player.get_stats()
+                                print("")
+                                print("You pick up the sword. It's power flows into your body.")
+                                event_clear = True
+                            elif repsonse.lower() == "no":
+                                print("")
+                                print("You ignore the sword. The sword then dissolves itself in shame.")
+                                event_clear = True
+                            else:
+                                print("")
+                                print("Not a viable option, try again.")
+
                 events.remove(e)
         if player_coordinate == [dunge.exit_loc[0],dunge.exit_loc[1]]: # end game if goal is reach
             print("")
@@ -55,7 +87,6 @@ def stage(floor, dunge): # generates enemies based on dungeon input
                 print("Rat walks to in front of you.")
                 print("'So far so good. Let's get ready for some more trouble.'")
             return True
-            state = False
 
 def movement(dunge): # movement through the dungeon
     print("It is hard to see, but you can move around. Which way would you like to go?")
