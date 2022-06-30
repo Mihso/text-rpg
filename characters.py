@@ -7,6 +7,7 @@ class dungeon:
         self.player_start = []
         self.exit_loc = []
         self.spaces = []
+        self.monolith_loc = []
         empty = []
 
         for l in range(self.length):

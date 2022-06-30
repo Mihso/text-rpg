@@ -21,9 +21,9 @@ def stage(floor, dunge): # generates enemies based on dungeon input
     for e in floor.event_list:
         events.append(e)
     while state == True:
-        movement(dunge)
         if "map" in player.items:
             map(dunge)
+        movement(dunge)
         if player.health < player_health_base:
             player.health += 2
 
@@ -44,6 +44,7 @@ def stage(floor, dunge): # generates enemies based on dungeon input
                 if e.name == "trap":
                     player.health -= e.damage
                     print("You stepped on a trap, taking " + str(e.damage) + " damage.")
+                    events.remove(e)
                 elif e.name == "find_item":
                     print("")
                     item_name = ""
@@ -95,11 +96,16 @@ def stage(floor, dunge): # generates enemies based on dungeon input
                             else:
                                 print("")
                                 print("Not a viable option, try again.")
+                    events.remove(e)
                 elif e.name == "empty_room":
-                    print()
+                    print("")
                     print("There is nothing in this area. No matter how much you look. Stop looking.")
+                    events.remove(e)
+                elif e.name == "landmark":
+                    print("")
+                    dunge.monolith_loc.append([player_coordinate[0],player_coordinate[1]])
+                    print("You find a giant monolith. It glows with great power.")
 
-                events.remove(e)
         if player_coordinate == [dunge.exit_loc[0],dunge.exit_loc[1]]: # end game if goal is reach
             print("")
             events.clear()
@@ -206,7 +212,10 @@ def map(dunge):
                     if en_found == True:
                         row += "[I]"
                     elif ev_found == True:
-                        row += "[?]"
+                        if [l,w] in dunge.monolith_loc:
+                            row += "[M]"
+                        else:
+                            row += "[?]"
                     else:
                         row += "[ ]"
             else:
