@@ -10,6 +10,7 @@ current_dungeon = characters.dungeon(15,15) # determine dungeon size
 player_coordinate = [current_dungeon.player_start[0], current_dungeon.player_start[1]]
 
 enemies = []
+events = []
 
 def movement(): # movement through the dungeon
     print("It is hard to see, but you can move around. Which way would you like to go?")
@@ -63,6 +64,9 @@ def movement(): # movement through the dungeon
             if abs(e.x - player_coordinate[0]) < 2 and abs(e.y-player_coordinate[1]) < 2:
                 print("Careful, I smell a " + e.name + " nearby.")
                 enemy_nearby = True
+        for e in events:
+            if abs(e.x - player_coordinate[0]) < 2 and abs(e.y-player_coordinate[1]) < 2:
+                print("Careful, I have a bad feeling about this area.")
         if enemy_nearby == False:
             print("Rat speaks up.")
             print("'It's safe at the moment, nobody else is nearby'")
@@ -81,8 +85,15 @@ def map():
                     for e in enemies:
                         if l == e.x and w == e.y:
                             en_found = True
+                    ev_found = False 
+                    for e in events:
+                        if l == e.x and w == e.y:
+                            ev_found = True
+
                     if en_found == True:
                         row += "[I]"
+                    elif ev_found == True:
+                        row += "[?]"
                     else:
                         row += "[ ]"
             else:
@@ -104,14 +115,13 @@ def battle(foe): # the entire code for the battle system
             action = input("Fight, Block, Magic, Run, Items, Analyze")
             if action.lower() == "fight":
                 if random.randint(0,10) < player.acc: # accuracy determines if attack lands
-                    dam = player.stre
                     if "rat" in player.items:
                         print("")
                         print("Rat attacks along side you.")
-                        dam += (player.stre)
+                        attack += (player.stre)
                     else:
                         pass
-                    foe.health -= dam    
+                    foe.health -= attack    
                     print("")
                     print("You damaged the enemy for " + str(attack) + " health.")
                 else:
@@ -285,13 +295,16 @@ while done == False:
 
 game_state = True
 # The actual game state
-
+player_health_base = player.health
 level1 = level.level_1(current_dungeon) # generates enemies based on dungeon input
 enemies = level1.enemy_list
+events = level1.event_list
 while game_state == True:
     if "map" in player.items:
         map()
     movement()
+    if player.health < player_health_base:
+        player.health += 2
 
     for e in enemies:
         if player_coordinate == [e.x, e.y]:
@@ -303,6 +316,12 @@ while game_state == True:
             else:
                 print("GAME OVER!")
                 game_state = False
+    for e in events:
+        if player_coordinate == [e.x, e.y]:
+            print("")
+            player.health -= e.damage
+            print("You stepped on a trap, taking " + str(e.damage) + " damage.")
+            events.remove(e)
     if player_coordinate == [current_dungeon.exit_loc[0],current_dungeon.exit_loc[1]]: # end game if goal is reach
         print("")
         print("Congrats, you made it out of the dungeon.")

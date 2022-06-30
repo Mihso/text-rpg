@@ -109,6 +109,12 @@ class exit_dun:
         self.x = x
         self.y = y
 
+class trap:
+    def __init__(self,x,y,damage):
+        self.x = x
+        self.y = y
+        self.damage = damage
+
 class key:
     def __init__(self, rusty, size):
         self.rusty = rusty
