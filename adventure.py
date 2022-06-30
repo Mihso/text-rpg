@@ -54,6 +54,7 @@ def stage(floor, dunge): # generates enemies based on dungeon input
                         item_name = "shield"
                     event_clear = False
                     while event_clear == False:
+                        print("")
                         print("You are walking along when you stub your toe.")
                         print("You look down and see a " + item_name + ".")
                         print("Do you pick it up?")
@@ -157,18 +158,30 @@ def movement(dunge): # movement through the dungeon
             print(e.name)
             print("["+str(e.x)+","+str(e.y)+"]")
     elif "rat" in player.items:
-        print("")
         enemy_nearby = False
+        event_nearby = False
         for e in enemies:
             if abs(e.x - player_coordinate[0]) < 2 and abs(e.y-player_coordinate[1]) < 2:
+                print("")
                 print("Careful, I smell a " + e.name + " nearby.")
                 enemy_nearby = True
+                
         for e in events:
-            if abs(e.x - player_coordinate[0]) < 2 and abs(e.y-player_coordinate[1]) < 2:
-                print("Careful, I have a bad feeling about this area.")
+            if event_nearby == False:
+                if abs(e.x - player_coordinate[0]) < 2 and abs(e.y-player_coordinate[1]) < 2 and e.name == "trap":
+                    print("")
+                    print("Careful, I have a bad feeling about this area.")
+                if player_coordinate[0] == e.x and player_coordinate[1] == e.y:
+                    print("")
+                    event_nearby = True
+                
         if enemy_nearby == False:
+            print("")
             print("Rat speaks up.")
-            print("'It's safe at the moment, nobody else is nearby'")
+            print("'I can smell that there is nobody else nearby.'")
+        if event_nearby == False:
+            print("")
+            print("Rat: 'Just wanted to say, you have been in this area before.'")
         
 def map(dunge):
     for l in range(dunge.length):
