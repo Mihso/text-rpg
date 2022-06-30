@@ -110,10 +110,15 @@ class exit_dun:
         self.y = y
 
 class trap:
-    def __init__(self,x,y,damage):
+    def __init__(self,x,y, name, damage):
         self.x = x
         self.y = y
+        self.name = name
         self.damage = damage
+class something:
+    def __init__(self, name):
+        self.name = name
+
 
 class key:
     def __init__(self, rusty, size):

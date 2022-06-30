@@ -319,8 +319,9 @@ while game_state == True:
     for e in events:
         if player_coordinate == [e.x, e.y]:
             print("")
-            player.health -= e.damage
-            print("You stepped on a trap, taking " + str(e.damage) + " damage.")
+            if e.name == "trap":
+                player.health -= e.damage
+                print("You stepped on a trap, taking " + str(e.damage) + " damage.")
             events.remove(e)
     if player_coordinate == [current_dungeon.exit_loc[0],current_dungeon.exit_loc[1]]: # end game if goal is reach
         print("")

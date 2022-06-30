@@ -12,10 +12,12 @@ class level_1:
             enemy_coordinate = []
             enemy_loc = False
             for s in dunge.spaces:
-                if random.randint(1,7) < 2:
-                    if enemy_loc == False:
-                        enemy_coordinate = s
-                        enemy_loc == True
+                if enemy_loc == False:
+                    if random.randint(1,200) < 2:
+                        enemy_coordinate = [s[0],s[1]]
+                        enemy_loc = True
+            if enemy_loc == False:
+                enemy_coordinate = dunge.spaces[random.randint(0, len(dunge.spaces)-1)]
             return enemy_coordinate
 
         skeleton_loc = enemy_location(self.dungeon)
@@ -37,5 +39,5 @@ class level_1:
         for i in range(0,10):
             if random.randint(1,10) > 5: 
                 event_loc = enemy_location(self.dungeon)
-                trap1 = characters.trap(event_loc[0],event_loc[1], random.randint(10,30))
+                trap1 = characters.trap(event_loc[0],event_loc[1],"trap",random.randint(10,30))
                 self.event_list.append(trap1)
