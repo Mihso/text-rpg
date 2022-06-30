@@ -14,7 +14,6 @@ player_coordinate = []
 
 def stage(floor, dunge): # generates enemies based on dungeon input
     state = True
-    player.get_stats()
     player_coordinate.append(dunge.player_start[0])
     player_coordinate.append(dunge.player_start[1])
     for e in floor.enemy_list:
@@ -22,9 +21,9 @@ def stage(floor, dunge): # generates enemies based on dungeon input
     for e in floor.event_list:
         events.append(e)
     while state == True:
+        movement(dunge)
         if "map" in player.items:
             map(dunge)
-        movement(dunge)
         if player.health < player_health_base:
             player.health += 2
 
@@ -98,13 +97,16 @@ def stage(floor, dunge): # generates enemies based on dungeon input
                             else:
                                 print("")
                                 print("Not a viable option, try again.")
-
+                elif e.name == "empty_room":
+                    print()
+                    print("There is nothing in this area. No matter how much you look. Stop looking.")
 
                 events.remove(e)
         if player_coordinate == [dunge.exit_loc[0],dunge.exit_loc[1]]: # end game if goal is reach
             print("")
             events.clear()
             enemies.clear()
+            player_coordinate.clear()
             print("Congrats, you made it out of the dungeon.")
             print("")
             if "rat" in player.items:
@@ -113,6 +115,7 @@ def stage(floor, dunge): # generates enemies based on dungeon input
             return True
 
 def movement(dunge): # movement through the dungeon
+    print("")
     print("It is hard to see, but you can move around. Which way would you like to go?")
     previous = [player_coordinate[0], player_coordinate[1]]
     response = input("North, South, East, West")

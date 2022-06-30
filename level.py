@@ -7,7 +7,7 @@ class level_1:
         self.dungeon = dungeon
         self.enemy_list = []
         self.event_list = []
-        self.events = ["find_item"]
+        self.events = ["find_item","empty_room"]
 
         def enemy_location(dunge):
             enemy_coordinate = []
@@ -38,12 +38,14 @@ class level_1:
         self.enemy_list.append(skeleton_knight1)
 
         for i in range(0,len(self.dungeon.spaces)):
-            if random.randint(1,10) > 6: 
+            if random.randint(1,10) > 8: 
                 trap1 = characters.trap(self.dungeon.spaces[i][0],self.dungeon.spaces[i][1],"trap",random.randint(10,30))
                 self.event_list.append(trap1)
             else:
                 event_name = ""
-                if random.randint(1,4) > 0:
+                if random.randint(1,4) > 2:
+                    event_name = self.events[1]
+                else:
                     event_name = self.events[0]
                 event = characters.something(self.dungeon.spaces[i][0],self.dungeon.spaces[i][1], event_name)
                 self.event_list.append(event)
