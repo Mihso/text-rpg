@@ -35,9 +35,19 @@ def stage(floor, dunge): # generates enemies based on dungeon input
                 if combat:
                     enemies.remove(e)
                 else:
-                    print("GAME OVER!")
-                    state = False
-                    return False
+                    if player.health > 0:
+                        if [player_coordinate[0]+1, player_coordinate[1]] in dunge.spaces:
+                            player_coordinate[0] += 1
+                        elif [player_coordinate[0]-1, player_coordinate[1]] in dunge.spaces:
+                            player_coordinate[0] -= 1
+                        elif [player_coordinate[0], player_coordinate[1]+1] in dunge.spaces:
+                            player_coordinate[1] += 1
+                        elif [player_coordinate[0], player_coordinate[1]-1] in dunge.spaces:
+                            player_coordinate[1] -= 1
+                    else:
+                        print("GAME OVER!")
+                        state = False
+                        return False
         for e in events:
             if player_coordinate == [e.x, e.y]:
                 print("")
@@ -263,10 +273,11 @@ def battle(foe): # the entire code for the battle system
                 turns += 1
                 player_done = True
             elif action.lower() == "run":
-                if random.randint(int(player.dext), 100 * (1/foe.speed)) < player.dext:# chance of escape based on player dext and enemy speed
+                if random.randint(0, int(100 * (1/foe.speed))) < player.dext:# chance of escape based on player dext and enemy speed
                     inBattle = False
                     print("")
                     print("You managed to run away")
+                    return False
                 else: 
                     print("")
                     print("Oh no, you couldn't escape.")
