@@ -2,12 +2,28 @@ import characters
 import random
 
 
+def event_square(level):
+    for i in range(0,len(level.dungeon.spaces)):
+        if random.randint(1,10) > 8: 
+            trap1 = characters.trap(level.dungeon.spaces[i][0],level.dungeon.spaces[i][1],"trap",random.randint(10,30))
+            level.event_list.append(trap1)
+        else:
+            event_name = ""
+            if random.randint(1,4) > 2:
+                event_name = level.events[1]
+            elif random.randint(1,10) > 9:
+                event_name = level.events[2]
+            else:
+                event_name = level.events[0]
+            event = characters.something(level.dungeon.spaces[i][0],level.dungeon.spaces[i][1], event_name)
+            level.event_list.append(event)
+
 class level_1:
     def __init__(self, dungeon):
         self.dungeon = dungeon
         self.enemy_list = []
         self.event_list = []
-        self.events = ["find_item","empty_room","landmark"]
+        self.events = ["find_item","empty_room","landmark",]
 
         def enemy_location(dunge):
             enemy_coordinate = []
@@ -37,17 +53,4 @@ class level_1:
         skeleton_knight1 = characters.skeleton(health = 120, attack= 13, speed= 2, x = skeleton_loc[0], y = skeleton_loc[1])
         self.enemy_list.append(skeleton_knight1)
 
-        for i in range(0,len(self.dungeon.spaces)):
-            if random.randint(1,10) > 8: 
-                trap1 = characters.trap(self.dungeon.spaces[i][0],self.dungeon.spaces[i][1],"trap",random.randint(10,30))
-                self.event_list.append(trap1)
-            else:
-                event_name = ""
-                if random.randint(1,4) > 2:
-                    event_name = self.events[1]
-                elif random.randint(1,10) > 9:
-                    event_name = self.events[2]
-                else:
-                    event_name = self.events[0]
-                event = characters.something(self.dungeon.spaces[i][0],self.dungeon.spaces[i][1], event_name)
-                self.event_list.append(event)
+        event_square(self)

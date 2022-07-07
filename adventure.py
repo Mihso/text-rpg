@@ -30,8 +30,13 @@ def stage(floor, dunge): # generates enemies based on dungeon input
         for e in enemies:
             if player_coordinate == [e.x, e.y]:
                 print("")
-                e.battle_start()
-                combat = battle(e)
+                combat = False
+                if e.health > 0:
+                    e.battle_start()
+                    combat = battle(e)
+                else:
+                    print("You prepare for battle, but the "+ e.name+ " was a complete fool and is so injured it dies on the spot.")
+                    combat = True
                 if combat:
                     enemies.remove(e)
                 else:
@@ -49,6 +54,10 @@ def stage(floor, dunge): # generates enemies based on dungeon input
                         state = False
                         return False
         for e in events:
+            for m in enemies:
+                if [e.x, e.y] == [m.x, m.y] and e.name == "trap":
+                    m.health -= e.damage
+                    events.remove(e)
             if player_coordinate == [e.x, e.y]:
                 print("")
                 if e.name == "trap":
